@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Analisis Kurs & Harga Pangan</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">📊 Dashboard Big Data - Kurs & Harga Pangan</span>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Row 1: Kurs Info -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">💱 Kurs USD-IDR</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="kurs-rate" class="text-center">
+                            <h2 class="text-primary">-</h2>
+                            <small class="text-muted">
+                                <span id="kurs-timestamp"></span>
+                            </small>
+                        </div>
+                        <canvas id="kursChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 1: Korelasi Info -->
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">📈 Korelasi Kurs vs Harga Pangan</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="correlation-info" class="text-center">
+                            <h3 id="correlation-value" class="text-info">-</h3>
+                            <small class="text-muted">Korelasi Bulanan</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2: Harga Pangan -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">🛒 Harga Pangan Terkini</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="pangan-list" class="row">
+                            <!-- akan di-populate oleh JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 3: Info -->
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    <strong>ℹ️ Info:</strong> Data diupdate secara real-time dari Kafka → HDFS → Spark → Dashboard
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

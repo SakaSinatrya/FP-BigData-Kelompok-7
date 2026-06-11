@@ -1,0 +1,103 @@
+/* Dashboard Styles */
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.card {
+    border: none;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.card-header {
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+    padding: 15px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+#kurs-rate h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 10px 0;
+}
+
+#correlation-value {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.pangan-item {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+}
+
+.pangan-item:hover {
+    border-color: #28a745;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.1);
+}
+
+.pangan-item .name {
+    font-weight: 600;
+    color: #333;
+}
+
+.pangan-item .price {
+    font-size: 1.3rem;
+    color: #28a745;
+    font-weight: 700;
+}
+
+.pangan-item .change {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.change-positive {
+    color: #dc3545;
+}
+
+.change-negative {
+    color: #28a745;
+}
+
+.change-neutral {
+    color: #6c757d;
+}
+
+.container-fluid {
+    max-width: 1400px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    #kurs-rate h2 {
+        font-size: 1.8rem;
+    }
+    
+    #correlation-value {
+        font-size: 1.5rem;
+    }
+}

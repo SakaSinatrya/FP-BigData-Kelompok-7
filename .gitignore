@@ -1,0 +1,54 @@
+@"
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes & logs
+data/
+hadoop_data/
+kafka_data/
+.docker/
+
+# Environment variables
+.env
+.env.local
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log
+logs/
+
+# Dashboard cache
+dashboard/__pycache__/
+dashboard/*.pyc
+
+# Data files (optional - uncomment jika tidak ingin versioning)
+# dashboard/data/
+
+# PySpark
+*.jar
+metastore_db/
+spark-warehouse/
+"@ | Out-File -Encoding UTF8 .gitignore
