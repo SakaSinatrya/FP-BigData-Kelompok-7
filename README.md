@@ -1,1 +1,0 @@
-# FP-BigData-Kelompok-7
