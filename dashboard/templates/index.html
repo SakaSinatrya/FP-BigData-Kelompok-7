@@ -1,83 +1,145 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Analisis Kurs & Harga Pangan</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard – Dampak Kurs USD terhadap Harga Pangan Indonesia</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark">
-        <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1">📊 Dashboard Big Data - Kurs & Harga Pangan</span>
-        </div>
-    </nav>
 
-    <div class="container-fluid mt-4">
-        <!-- Row 1: Kurs Info -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">💱 Kurs USD-IDR</h5>
-                    </div>
-                    <div class="card-body">
-                        <div id="kurs-rate" class="text-center">
-                            <h2 class="text-primary">-</h2>
-                            <small class="text-muted">
-                                <span id="kurs-timestamp"></span>
-                            </small>
-                        </div>
-                        <canvas id="kursChart" height="100"></canvas>
-                    </div>
-                </div>
-            </div>
+<nav class="navbar navbar-dark bg-dark px-4">
+  <span class="navbar-brand fw-bold">
+    📊 Analisis Dampak Kurs USD terhadap Harga Pangan Indonesia
+  </span>
+  <span class="text-muted small" id="last-updated"></span>
+</nav>
 
-            <!-- Row 1: Korelasi Info -->
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">📈 Korelasi Kurs vs Harga Pangan</h5>
-                    </div>
-                    <div class="card-body">
-                        <div id="correlation-info" class="text-center">
-                            <h3 id="correlation-value" class="text-info">-</h3>
-                            <small class="text-muted">Korelasi Bulanan</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="container-fluid mt-4 px-4">
 
-        <!-- Row 2: Harga Pangan -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">🛒 Harga Pangan Terkini</h5>
-                    </div>
-                    <div class="card-body">
-                        <div id="pangan-list" class="row">
-                            <!-- akan di-populate oleh JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- ── ROW 1: Kurs terkini ── -->
+  <div class="row g-3 mb-4">
 
-        <!-- Row 3: Info -->
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-info" role="alert">
-                    <strong>ℹ️ Info:</strong> Data diupdate secara real-time dari Kafka → HDFS → Spark → Dashboard
-                </div>
-            </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-primary">
+        <div class="card-header bg-primary text-white">💱 Kurs USD-IDR (Live)</div>
+        <div class="card-body text-center d-flex flex-column justify-content-center">
+          <h2 class="text-primary fw-bold" id="kurs-current">–</h2>
+          <small class="text-muted" id="kurs-date"></small>
         </div>
+      </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <div class="col-md-8">
+      <div class="card h-100 shadow-sm">
+        <div class="card-header bg-secondary text-white">📉 Histori Kurs 30 Hari Terakhir</div>
+        <div class="card-body">
+          <canvas id="kursChart" height="80"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── ROW 2: Harga pangan live ── -->
+  <div class="row g-3 mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">🛒 Harga Pangan Terkini (Live dari Kafka)</div>
+        <div class="card-body">
+          <div class="row" id="pangan-list">
+            <p class="text-muted">Memuat data…</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ROW 3: Tren bulanan (Gold Layer) ── -->
+  <div class="row g-3 mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark">📅 Tren Bulanan Kurs vs Harga Pangan (Gold Layer)</div>
+        <div class="card-body">
+          <canvas id="monthlyChart" height="80"></canvas>
+          <p class="mt-2 text-muted small">
+            Data bulanan ini juga menyertakan harga minyak Brent (EIA) dan inflasi nasional (BPS) sebagai pembanding di balik layar — lihat detail di tabel FPVI di bawah.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ROW 4: Korelasi per komoditas ── -->
+  <div class="row g-3 mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-info text-dark">🔗 Korelasi Pearson – Harga per Komoditas vs Kurs &amp; Minyak</div>
+        <div class="card-body">
+          <canvas id="corrChart" height="60"></canvas>
+          <p class="mt-3 text-muted small">
+            Nilai mendekati <strong>+1</strong> = harga naik seiring kurs/minyak naik (komoditas impor/distribusi mahal).
+            Mendekati <strong>0</strong> atau negatif = pengaruh kecil (komoditas lokal/musiman).
+            Korelasi dihitung di Spark Gold Layer dari agregasi bulanan Silver (kurs+pangan+minyak).
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ROW 5: Food Price Vulnerability Index & Peringatan Dini ── -->
+  <div class="row g-3 mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm border-danger">
+        <div class="card-header bg-danger text-white">
+          🚨 Food Price Vulnerability Index (FPVI) &amp; Peringatan Dini
+        </div>
+        <div class="card-body">
+          <div id="analytics-summary" class="mb-3 small text-muted"></div>
+          <p class="small text-muted mb-2">💡 Klik baris komoditas untuk melihat penjelasan mekanisme sebab-akibat.</p>
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>Komoditas</th>
+                  <th>FPVI Score</th>
+                  <th>Level</th>
+                  <th>Status Peringatan</th>
+                  <th>Harga Terakhir</th>
+                  <th id="proyeksi-header">Proyeksi (4 minggu)</th>
+                  <th>Estimasi Dampak</th>
+                </tr>
+              </thead>
+              <tbody id="analytics-table-body">
+                <tr><td colspan="7" class="text-muted">Memuat data analitik…</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-2 text-muted small">
+            <strong>FPVI</strong> = 50% kekuatan korelasi vs kurs + 30% volatilitas harga historis + 20% ketergantungan impor (heuristik nama komoditas).
+            <strong>Status Peringatan</strong> dipicu saat korelasi kuat (|r| ≥ 0.5) DAN tren kurs bulan terakhir naik/turun.
+            <strong>Proyeksi</strong> dihitung dari regresi linear harga-vs-kurs, diekstrapolasi memakai tren kurs 1 bulan terakhir.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ROW 6: Status pipeline ── -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="alert alert-info py-2">
+        <strong>Pipeline:</strong> Sumber BI, PIHPS, EIA &amp; BPS → Kafka/Batch → HDFS Bronze → Spark Silver → Spark Gold → Dashboard
+        &nbsp;|&nbsp; <span id="pipeline-status" class="fw-bold">–</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </body>
 </html>
