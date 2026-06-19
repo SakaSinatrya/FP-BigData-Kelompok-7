@@ -1,51 +1,42 @@
-"""
-Silver Layer
-Cleaning, casting tipe data, join data kurs dan harga pangan
-"""
+import os
+os.environ["HADOOP_USER_NAME"] = "root"  # Ini ID Card palsunya
 
 from pyspark.sql import SparkSession
-from pyspark.sql.types import DoubleType, IntegerType, DateType
-from pyspark.sql.functions import col, to_date, round
+from pyspark.sql.types import DoubleType, IntegerType
+from pyspark.sql.functions import col, to_date
 
-HDFS_BRONZE_PATH = "hdfs://namenode:8020/data/bronze"
-HDFS_SILVER_PATH = "hdfs://namenode:8020/data/silver"
-
+HDFS_BRONZE_KURS = "hdfs://localhost:8020/data/lakehouse/bronze_parquet/kurs"
+HDFS_BRONZE_PANGAN = "hdfs://localhost:8020/data/lakehouse/bronze_parquet/pangan"
+HDFS_SILVER_PATH = "hdfs://localhost:8020/data/lakehouse/silver"
 
 def transform_silver():
-    """Transform bronze ke silver dengan cleaning dan casting"""
     spark = SparkSession.builder \
         .appName("SilverLayer") \
-        .master("spark://spark-master:7077") \
+        .master("local[*]") \
+        .config("spark.driver.bindAddress", "127.0.0.1") \
+        .config("spark.driver.host", "127.0.0.1") \
+        .config("spark.hadoop.dfs.client.use.datanode.hostname", "true") \
         .getOrCreate()
     
-    # Load bronze data
-    kurs_df = spark.read.parquet(f"{HDFS_BRONZE_PATH}/kurs")
-    pangan_df = spark.read.parquet(f"{HDFS_BRONZE_PATH}/pangan")
+    kurs_df = spark.read.parquet(HDFS_BRONZE_KURS)
+    pangan_df = spark.read.parquet(HDFS_BRONZE_PANGAN)
     
-    # Transform kurs: cast to double, parse timestamp
     kurs_silver = kurs_df \
+        .withColumn("date", to_date(col("timestamp"))) \
         .withColumn("rate", col("rate").cast(DoubleType())) \
-        .withColumn("date", to_date(col("timestamp"))) \
-        .select("date", "rate")
+        .select("date", "rate", "beli", "jual")
     
-    # Transform pangan: parse timestamp
     pangan_silver = pangan_df \
-        .withColumn("date", to_date(col("timestamp"))) \
-        .select("date", "items")
+        .withColumn("date", to_date(col("tanggal"))) \
+        .withColumn("harga", col("harga").cast(IntegerType())) \
+        .select("date", "komoditas", "harga")
     
-    # Join kurs dan pangan berdasarkan date
-    joined_df = kurs_silver.join(
-        pangan_silver,
-        on="date",
-        how="inner"
-    )
+    joined_df = kurs_silver.join(pangan_silver, on="date", how="inner")
     
-    # Save ke silver
     joined_df.write.mode("overwrite").parquet(f"{HDFS_SILVER_PATH}/kurs_pangan")
     
-    print("Silver layer created successfully")
+    print("Silver Layer Success")
     spark.stop()
-
 
 if __name__ == "__main__":
     transform_silver()
