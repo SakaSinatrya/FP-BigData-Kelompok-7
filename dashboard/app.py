@@ -1,5 +1,6 @@
 """
-Flask Dashboard - Analisis Dampak Kurs USD terhadap Harga Pangan
+Flask Dashboard — SembakoWatch
+Big Data & AI-Driven Early Warning System untuk Ketahanan Pangan
 Akses di http://localhost:8080
 """
 
@@ -25,10 +26,14 @@ def _read_json(path, default):
         return default
 
 
+# ── Pages ────────────────────────────────────────────────────────────────────
+
 @app.route("/")
 def index():
     return render_template("index.html")
 
+
+# ── API: Live Data (Speed Layer) ─────────────────────────────────────────────
 
 @app.route("/api/kurs")
 def get_kurs():
@@ -79,6 +84,8 @@ def get_pangan():
     })
 
 
+# ── API: Gold Layer (Batch Layer) ────────────────────────────────────────────
+
 @app.route("/api/monthly_kurs")
 def get_monthly_kurs():
     data = _read_json(os.path.join(GOLD_DIR, "monthly_kurs.json"), [])
@@ -112,6 +119,37 @@ def get_analytics():
     data = _read_json(os.path.join(GOLD_DIR, "analytics.json"), {})
     return jsonify(data)
 
+
+# ── API: ML Features (New) ──────────────────────────────────────────────────
+
+@app.route("/api/forecast")
+def get_forecast():
+    data = _read_json(os.path.join(GOLD_DIR, "forecast.json"), {
+        "model_info": {"status": "NO_DATA"},
+        "forecasts": []
+    })
+    return jsonify(data)
+
+
+@app.route("/api/anomaly")
+def get_anomaly():
+    data = _read_json(os.path.join(GOLD_DIR, "anomaly.json"), {
+        "anomalies": [],
+        "summary": {"total_anomalies": 0, "high_severity": 0, "medium_severity": 0, "low_severity": 0}
+    })
+    return jsonify(data)
+
+
+@app.route("/api/het_warning")
+def get_het_warning():
+    data = _read_json(os.path.join(GOLD_DIR, "het_warning.json"), {
+        "het_thresholds": {},
+        "warnings": []
+    })
+    return jsonify(data)
+
+
+# ── Run ──────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     os.makedirs(DATA_DIR, exist_ok=True)

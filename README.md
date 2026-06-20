@@ -41,7 +41,7 @@ Producers → Kafka → Consumer → HDFS → Spark (Bronze/Silver/Gold) → Das
 #### 5. **Spark Layers** (`spark/`)
 - `bronze_layer.py`: Load raw JSON dari HDFS, struktur tipe string
 - `silver_layer.py`: Cleaning, casting tipe, join kurs + harga
-- `gold_layer.py`: Agregasi bulanan, analisis korelasi Pearson
+- `gold_layer.py`: Analitik tingkat lanjut. Melakukan agregasi bulanan, analisis korelasi Pearson (termasuk dengan Harga Minyak Global), melatih model Machine Learning (Forecasting), Anomaly Detection (Z-Score), HET Early Warning System, serta menghitung indeks kerentanan pangan (FPVI).
 
 #### 6. **Dashboard** (`dashboard/`)
 - Flask app di `http://localhost:5000`
@@ -50,6 +50,14 @@ Producers → Kafka → Consumer → HDFS → Spark (Bronze/Silver/Gold) → Das
 
 #### 7. **Config** (`config/`)
 - `kafka_config.py`: Konfigurasi terpusat (Kafka, HDFS, paths)
+
+### 🌟 Fitur Analitik & AI (Baru)
+Proyek ini mengintegrasikan pemrosesan Big Data dengan teknik analisis tingkat lanjut untuk menghasilkan *actionable insights*:
+1. **Machine Learning Forecasting:** Menggunakan PySpark `LinearRegression` untuk memprediksi harga pangan hingga 4 minggu ke depan. Disertai metrik validasi (RMSE dan R²) secara transparan.
+2. **Anomaly Detection (Z-Score):** Mendeteksi lonjakan harga yang tidak wajar di luar tren historis menggunakan analisis residual Z-Score, lengkap dengan estimasi potensi penyebab anomali.
+3. **HET Early Warning System:** Sistem peringatan dini otomatis yang memantau margin harga aktual terhadap Harga Eceran Tertinggi (HET) yang ditetapkan pemerintah. Memberikan status *Aman*, *Waspada*, atau *Kritis*.
+4. **Food Price Vulnerability Index (FPVI):** Indeks kerentanan harga pangan (skala 0-100) yang diciptakan khusus untuk proyek ini. Menilai seberapa rentan suatu komoditas terhadap guncangan kurs USD dan fluktuasi harga minyak global.
+5. **Pearson Correlation Analysis:** Analisis korelasi *real-time* yang mengungkap kekuatan hubungan linear antara Kurs USD/Minyak Global dengan pergerakan harga pangan domestik.
 
 ## 🚀 Cara Menjalankan
 
@@ -278,17 +286,20 @@ Buka browser ke `http://localhost:5000` untuk visualisasi real-time data kurs da
 
 5. GOLD LAYER (Analytics & Aggregation)
    ├─→ gold_layer.py:
-   │   ├─ Join kurs + pangan by date
-   │   ├─ Monthly aggregation
-   │   ├─ Correlation analysis (Pearson)
-   │   └─ → HDFS /data/lakehouse/gold/dampak_kurs_pangan/ (Parquet)
+   │   ├─ Join kurs + pangan + minyak global
+   │   ├─ ML Forecasting (PySpark Linear Regression)
+   │   ├─ Z-Score Anomaly Detection
+   │   ├─ HET Margin Analysis & FPVI Calculation
+   │   └─ → Local JSON (dashboard/data/gold/)
 
 6. VISUALIZATION & BI
    ├─→ Dashboard (Flask):
    │   ├─ GET /api/kurs: Latest kurs + 7-day history
-   │   ├─ GET /api/pangan: Latest harga pangan
-   │   └─ GET /api/correlation: Pearson correlation results
-   └─→ Web UI: http://localhost:5000
+   │   ├─ GET /api/pangan: Latest harga pangan & prediksi ML
+   │   ├─ GET /api/correlation: Pearson correlation results
+   │   ├─ GET /api/anomali: Log deteksi anomali harga
+   │   └─ GET /api/fpvi: Skor Food Price Vulnerability Index
+   └─→ Web UI: Enterprise-grade dashboard di http://localhost:5000
 ```
 
 **Timeline Processing:**
