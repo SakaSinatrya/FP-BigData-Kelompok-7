@@ -1,48 +1,65 @@
 import os, sys, time, json
 from datetime import datetime
 from kafka import KafkaProducer
-from curl_cffi import requests 
+import requests
+from bs4 import BeautifulSoup
+import urllib3
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from config.kafka_config import KAFKA_BOOTSTRAP_SERVERS, TOPIC_PANGAN
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-API_URL = "https://www.bi.go.id/hargapangan/Website/Home/GetDetailGridData2"
-KOMODITAS = {
-    "12": "Bawang Putih Impor", 
-    "16": "Cabai Rawit Lokal", 
-    "3": "Beras Medium"
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config.kafka_config import KAFKA_BROKER, TOPIC_PANGAN
+
+API_URL = "https://siskaperbapo.jatimprov.go.id/"
+
+KOMODITAS_MAP = {
+    "Bawang Putih / kg": "Bawang Putih Impor", 
+    "Cabe Rawit Merah / kg": "Cabai Rawit Lokal", 
+    "Beras Medium / kg": "Beras Medium"
 }
 
+def fetch_siskaperbapo():
+    try:
+        res = requests.get(API_URL, verify=False, timeout=15)
+        soup = BeautifulSoup(res.text, "html.parser")
+        
+        records = []
+        iso_date = datetime.now().date().isoformat()
+        
+        for tr in soup.find_all("tr"):
+            tds = tr.find_all("td")
+            if len(tds) >= 4:
+                nama_asli = tds[1].text.strip()
+                harga_str = tds[3].text.strip()
+                
+                if nama_asli in KOMODITAS_MAP and harga_str:
+                    cname = KOMODITAS_MAP[nama_asli]
+                    harga_clean = int(harga_str.replace(".", ""))
+                    
+                    records.append({
+                        "komoditas": cname,
+                        "tanggal": iso_date,
+                        "harga": harga_clean
+                    })
+                    
+        return records
+    except Exception as e:
+        print(f"[ERROR] Fetch Siskaperbapo: {e}")
+        return []
+
 def main():
-    producer = KafkaProducer(bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS, 
+    producer = KafkaProducer(bootstrap_servers=KAFKA_BROKER, 
                              value_serializer=lambda v: json.dumps(v).encode("utf-8"))
     
-    session = requests.Session()
-    session.get("https://www.bi.go.id/hargapangan", impersonate="chrome120", verify=False) 
-    
-    print(f"Producer Pangan Aktif. Target topic: {TOPIC_PANGAN}")
+    print(f"Producer Pangan (Siskaperbapo) Aktif. Target topic: {TOPIC_PANGAN}")
     
     try:
         while True:
-            tgl_kunci = datetime.now().strftime("%d/%m/%Y")
-            iso_date = datetime.now().date().isoformat()
-            
-            for cid, cname in KOMODITAS.items():
-                params = {"ProvId": "0", "PriceTypeId": "1", "ComId": cid, "date": tgl_kunci.replace("/"," "), "isPasokan": "1", "_": int(time.time()*1000)}
-                try:
-                    res = session.get(API_URL, params=params, impersonate="chrome120", verify=False).json()
-                    
-                    for row in res.get("data", []):
-                        if row.get("name") == "Semua Provinsi" and row.get(tgl_kunci):
-                            rec = {"komoditas": cname, "tanggal": iso_date, "harga": int(float(row[tgl_kunci]))}
-                            producer.send(TOPIC_PANGAN, value=rec)
-                            print(f"[PANGAN] Sent: {rec}")
-                            break
-                except Exception as e:
-                    print(f"[ERROR] Fetch {cname}: {e}")
+            records = fetch_siskaperbapo()
+            for rec in records:
+                producer.send(TOPIC_PANGAN, value=rec)
+                print(f"[PANGAN] Sent: {rec}")
                 
-                time.sleep(2) 
-            
             producer.flush()
             time.sleep(3600) 
             

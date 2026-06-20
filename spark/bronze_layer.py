@@ -26,15 +26,29 @@ def load_raw_data():
     spark.sparkContext.setLogLevel("WARN")
 
     # Ini dia "gunting"-nya biar kokinya bisa baca data yang berlapis-lapis
-    kurs_df   = spark.read.option("multiline", "true").json(f"{HDFS_RAW_KURS}/*")
-    pangan_df = spark.read.option("multiline", "true").json(f"{HDFS_RAW_PANGAN}/*")
-    eia_df    = spark.read.option("multiline", "true").json(f"{HDFS_RAW_EIA}/*")
-    bps_df    = spark.read.option("multiline", "true").json(f"{HDFS_RAW_BPS}/*")
+    try:
+        kurs_df = spark.read.option("multiline", "true").json(f"{HDFS_RAW_KURS}/*")
+        kurs_df.write.mode("overwrite").parquet(HDFS_BRONZE_KURS)
+    except Exception as e:
+        print(f"Skipping Kurs: {e}")
 
-    kurs_df.write.mode("overwrite").parquet(HDFS_BRONZE_KURS)
-    pangan_df.write.mode("overwrite").parquet(HDFS_BRONZE_PANGAN)
-    eia_df.write.mode("overwrite").parquet(HDFS_BRONZE_EIA)
-    bps_df.write.mode("overwrite").parquet(HDFS_BRONZE_BPS)
+    try:
+        pangan_df = spark.read.option("multiline", "true").json(f"{HDFS_RAW_PANGAN}/*")
+        pangan_df.write.mode("overwrite").parquet(HDFS_BRONZE_PANGAN)
+    except Exception as e:
+        print(f"Skipping Pangan: {e}")
+
+    try:
+        eia_df = spark.read.option("multiline", "true").json(f"{HDFS_RAW_EIA}/*")
+        eia_df.write.mode("overwrite").parquet(HDFS_BRONZE_EIA)
+    except Exception as e:
+        print(f"Skipping EIA: Data tidak ditemukan")
+        
+    try:
+        bps_df = spark.read.option("multiline", "true").json(f"{HDFS_RAW_BPS}/*")
+        bps_df.write.mode("overwrite").parquet(HDFS_BRONZE_BPS)
+    except Exception as e:
+        print(f"Skipping BPS: Data tidak ditemukan")
 
     print("Tugas Bronze Layer berhasil! (kurs, pangan, eia, bps)")
     spark.stop()

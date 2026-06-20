@@ -1,0 +1,92 @@
+Unnamed: 0,RUBRIK PENILAIAN FINAL PROJECT — TEKNOLOGI BIG DATA  |  Kelas B  |  ITS 2025/2026,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8
+,Referensi ini menjelaskan apa yang dinilai di setiap komponen dan bagaimana cara membedakan level nilai.  Gunakan bersama sheet 'Penilaian' saat mengisi nilai kelompok.,,,,,,,
+,,,,,,,,
+,  Komponen Penilaian & Deskriptor Level,,,,,,,
+,No,CPMK,Komponen & Bobot,Skor,Sangat Baik  90–100,Baik  75–89,Cukup  60–74,Kurang  <60
+,1,CPMK-1,"Identifikasi Masalah
+& Relevansi Big Data
+(15%)",15%,"• Masalah dibuktikan dengan data kuantitatif terkini: statistik resmi, berita valid, atau dataset publik
+• Menjelaskan mengapa Big Data diperlukan menggunakan kerangka 5V (Volume, Velocity, Variety, Veracity, Value) dengan tepat
+• Analisis gap menunjukkan masalah belum terselesaikan oleh solusi yang ada","• Masalah jelas dan relevan, disertai bukti yang memadai (berita atau referensi)
+• Keterkaitan dengan Big Data dijelaskan, meski belum semua dimensi 5V dipetakan
+• Ada gambaran singkat tentang solusi yang sudah ada","• Masalah diidentifikasi secara umum tanpa data pendukung yang kuat
+• Big Data disebutkan tapi belum diintegrasikan ke konteks masalah
+• Tidak ada analisis solusi yang sudah ada","• Masalah tidak jelas, tidak relevan, atau tidak membutuhkan Big Data
+• Tidak ada keterkaitan dengan konsep 5V
+• Permasalahan bisa diselesaikan dengan sistem biasa (non Big Data)"
+,2,CPMK-2,"Desain Infrastruktur
+Big Data
+(20%)",20%,"• Pipeline lengkap mencakup semua layer: Ingestion (Kafka/Flume), Storage (HDFS/S3/NoSQL), Processing (Spark/Flink), Serving
+• Setiap teknologi dipilih dengan justifikasi teknis eksplisit (misal: Kafka untuk throughput tinggi, Spark untuk in-memory processing)
+• Diagram arsitektur detail, akurat, dan menunjukkan alur data end-to-end","• Pipeline mencakup ≥3 layer utama dengan penjelasan yang cukup
+• Teknologi dipilih dengan alasan yang masuk akal meski kurang detail
+• Diagram arsitektur ada namun tidak lengkap","• Hanya menyebut 1–2 teknologi Big Data tanpa penjelasan pipeline
+• Pemilihan teknologi tanpa justifikasi
+• Tidak ada diagram arsitektur","• Tidak ada rancangan infrastruktur yang jelas
+• Teknologi yang dipilih tidak tepat atau tidak ada kaitan dengan Big Data
+• Tidak ada pertimbangan scalability atau fault tolerance"
+,3,CPMK-3,"Implementasi
+Data Lakehouse
+(20%)",20%,"• Menerapkan arsitektur Medallion (Bronze → Silver → Gold) atau struktur lakehouse yang setara secara eksplisit
+• Proses transformasi data di setiap layer didefinisikan dengan jelas (raw → cleaned → aggregated)
+• Format dan partisi penyimpanan dipertimbangkan (Parquet, Delta Lake, partisi per tanggal/wilayah)","• Ada pemisahan minimal 2 layer (raw vs processed) dengan proses transformasi yang dijelaskan
+• Format penyimpanan diperhatikan meski belum optimal
+• Konsep lakehouse teraplikasikan walau tidak menggunakan istilah Medallion","• Konsep lakehouse disebutkan namun tidak diimplementasikan secara terstruktur
+• Hanya ada satu layer atau tidak ada pemisahan raw vs processed data
+• Format penyimpanan tidak dipertimbangkan","• Tidak ada struktur Data Lakehouse
+• Data langsung diproses tanpa storage layer yang terorganisir
+• Tidak ada konsep pemisahan data berdasarkan tingkat kebersihan/agregasi"
+,4,CPMK-4,"Teknik Analisis
+& Kualitas Output
+(25%)",25%,"• Menerapkan ≥2 teknik analisis lanjutan: ML/forecasting, clustering spasial, anomaly detection, NLP, atau Computer Vision
+• Output terukur dan spesifik: index/score, prediksi dengan horizon waktu, estimasi dampak kuantitatif
+• Metode evaluasi model dijelaskan dengan jelas (AUC, RMSE, F1-score) dan validasi memadai (train/test split, cross-validation)","• Menerapkan 1 teknik analisis lanjutan dengan hasil yang dapat diukur
+• Output memiliki metrik yang jelas
+• Evaluasi model disebutkan meski tidak detail","• Analisis terbatas pada statistik deskriptif atau visualisasi dasar (grafik, tabel)
+• Output berupa dashboard tanpa insight analitik yang terukur
+• Tidak ada evaluasi model","• Tidak ada teknik analisis data yang bermakna
+• Output hanya menampilkan data mentah tanpa proses analisis
+• Tidak ada insight yang bisa diambil dari sistem"
+,5,CPMK 1-4,"Keunikan
+& Inovasi Solusi
+(10%)",10%,"• Menggabungkan ≥3 teknologi secara sinergis (contoh: Computer Vision + Kafka Streaming + GIS)
+• Analisis kompetitor menunjukkan dengan jelas mengapa solusi ini lebih baik atau berbeda
+• Mengatasi gap yang benar-benar belum diselesaikan oleh solusi yang ada","• Menggabungkan 2 teknologi dengan pendekatan yang cukup unik
+• Ada identifikasi pembeda dari solusi eksisting meski kurang mendalam
+• Inovasi ada namun incremental, bukan breakthrough","• Kombinasi teknologi yang umum dan sudah banyak digunakan
+• Tidak ada analisis perbandingan dengan solusi yang sudah ada
+• Solusi tidak memberikan nilai tambah yang jelas","• Solusi sangat umum dan tidak ada unsur kebaruan
+• Merupakan duplikasi solusi yang sudah ada tanpa modifikasi
+• Tidak bisa menjelaskan perbedaan dengan sistem yang sudah ada"
+,6,CPMK 2-4,"Implementasi
+& Demo Sistem
+(10%)",10%,"• Sistem berjalan end-to-end dengan pipeline data aktif (bukan mock atau dummy statis)
+• Demo menggunakan data real atau simulasi yang realistis dan representatif
+• Sistem menangani kondisi error, data kosong, atau fallback secara graceful","• Sebagian besar fitur utama berfungsi dan dapat didemonstrasikan
+• Demo berjalan lancar meski menggunakan data dummy atau skenario terbatas
+• Ada beberapa fitur yang belum selesai namun tidak mengganggu alur utama","• Sistem hanya berjalan sebagian atau masih berupa prototipe awal
+• Demo membutuhkan banyak penyesuaian manual atau sering error
+• Banyak fitur utama yang belum berfungsi","• Sistem tidak dapat didemonstrasikan atau tidak berjalan sama sekali
+• Hanya berupa mockup/wireframe tanpa implementasi nyata
+• Tidak ada kode atau pipeline yang bisa dijalankan"
+,,,,,,,,
+,  Skala Nilai & Konversi Huruf Mutu,,,,,,,
+,Rentang,Huruf,Bobot Mutu,Predikat,Karakteristik Umum,,,
+,90 – 100,A,4.0,Istimewa,"Semua komponen dikerjakan sangat baik. Infrastruktur matang, analisis mendalam, sistem berjalan end-to-end, dan inovasi tinggi.",,,
+,80 – 89,AB,3.5,Sangat Baik,Sebagian besar komponen sangat baik. Ada 1–2 area yang bisa diperkuat namun tidak mengurangi kualitas keseluruhan secara signifikan.,,,
+,75 – 79,B,3.0,Baik,Memenuhi semua komponen dengan kualitas yang baik. Beberapa aspek teknis atau analisis masih bisa diperdalam.,,,
+,70 – 74,BC,2.5,Cukup Baik,"Memenuhi sebagian besar komponen. Output ada namun belum terukur, atau implementasi belum selesai sepenuhnya.",,,
+,65 – 69,C,2.0,Cukup,"Memenuhi syarat minimum. Banyak komponen yang masih dangkal, analisis terbatas pada deskriptif, atau pipeline tidak lengkap.",,,
+,< 65,D,< 2.0,Kurang,"Tidak memenuhi syarat minimum. Tidak ada implementasi nyata, masalah tidak relevan, atau sistem tidak dapat didemonstrasikan.",,,
+,,,,,,,,
+,  Poin Bonus,,,,,,,
+,Bonus,Syarat,,,,,,
+,Smart City (+5),"Topik berfokus pada permasalahan kota (transportasi, lingkungan, infrastruktur) dengan solusi data-driven yang dapat diintegrasikan ke ekosistem Smart City. Ditandai dengan relevansi terhadap kebijakan kota dan potensi adopsi nyata.",,,,,,
+,Gemastik 2026 (+5),"Tim memiliki rencana konkret mengikuti Gemastik 2026, dibuktikan dengan proposal lomba atau outline submission yang sudah disiapkan. Nilai diberikan bukan hanya karena niat, tetapi ada artefak nyata (dokumen proposal).",,,,,,
+,,,,,,,,
+,  Tips untuk Penilai,,,,,,,
+,"1.  Gunakan deskriptor sebagai anchor, bukan checklist kaku. Nilai bisa berada di antara dua level jika kualitas kerja berada di tengah-tengah.",,,,,,,
+,"2.  Komponen K4 (Teknik Analisis, bobot 25%) adalah penentu terbesar — berikan perhatian lebih saat menilai kedalaman analisis dan kualitas output.",,,,,,,
+,"3.  Untuk output 'terukur': pastikan ada angka spesifik (index, skor, persentase akurasi) — bukan hanya klaim kualitatif seperti 'sistem berhasil mendeteksi pelanggaran'.",,,,,,,
+,"4.  Jika ragu antara dua level, tulis catatan di kolom 'Catatan Penilai' pada sheet Penilaian untuk didiskusikan dengan dosen.",,,,,,,
+,5.  Bonus Smart City dan Gemastik bersifat independen — tim bisa mendapat keduanya (total +10) jika memenuhi kedua syarat.,,,,,,,

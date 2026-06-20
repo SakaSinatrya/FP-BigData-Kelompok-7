@@ -1,10 +1,11 @@
-import os, sys, time, json, requests
+import os, sys, time, json
+from curl_cffi import requests
 import xml.etree.ElementTree as ET
 from datetime import date, timedelta
 from kafka import KafkaProducer
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from config.kafka_config import KAFKA_BOOTSTRAP_SERVERS, TOPIC_KURS
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config.kafka_config import KAFKA_BROKER, TOPIC_KURS
 
 def fetch_kurs() -> list[dict]:
     end = date.today()
@@ -13,7 +14,7 @@ def fetch_kurs() -> list[dict]:
     url = f"https://www.bi.go.id/biwebservice/wskursbi.asmx/getSubKursLokal3?mts=USD&startdate={start}&enddate={end}"
     
     try:
-        res = requests.get(url, timeout=15)
+        res = requests.get(url, timeout=15, impersonate="chrome110", verify=False)
         root = ET.fromstring(res.text)
         records = []
         
@@ -36,7 +37,7 @@ def fetch_kurs() -> list[dict]:
         return []
 
 def main():
-    producer = KafkaProducer(bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS, 
+    producer = KafkaProducer(bootstrap_servers=KAFKA_BROKER, 
                              value_serializer=lambda v: json.dumps(v).encode("utf-8"))
     print(f"Producer Kurs Aktif. Target topic: {TOPIC_KURS}")
     

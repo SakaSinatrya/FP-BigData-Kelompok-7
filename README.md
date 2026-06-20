@@ -173,12 +173,12 @@ Buka terminal baru (tetap aktifkan venv), jalankan producer:
 
 **Terminal 1 - Producer Kurs USD-IDR:**
 ```bash
-python -m producers.producer_kurs
+python -m producers.streaming_kafka.producer_kurs
 ```
 
 **Terminal 2 - Producer Harga Pangan:**
 ```bash
-python -m producers.producer_pangan
+python -m producers.streaming_kafka.producers_pangan
 ```
 
 Verifikasi data masuk ke Kafka:

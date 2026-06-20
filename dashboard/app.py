@@ -1,6 +1,6 @@
 """
 Flask Dashboard - Analisis Dampak Kurs USD terhadap Harga Pangan
-Akses di http://localhost:5000
+Akses di http://localhost:8080
 """
 
 import json
@@ -116,4 +116,4 @@ def get_analytics():
 if __name__ == "__main__":
     os.makedirs(DATA_DIR, exist_ok=True)
     os.makedirs(GOLD_DIR, exist_ok=True)
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=True)

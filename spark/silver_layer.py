@@ -24,8 +24,6 @@ def transform_silver():
 
     kurs_df   = spark.read.parquet(HDFS_BRONZE_KURS)
     pangan_df = spark.read.parquet(HDFS_BRONZE_PANGAN)
-    eia_df    = spark.read.parquet(HDFS_BRONZE_EIA)
-
     kurs_silver = kurs_df \
         .withColumn("date", to_date(col("timestamp"))) \
         .withColumn("rate", col("rate").cast(DoubleType())) \
@@ -36,17 +34,23 @@ def transform_silver():
         .withColumn("harga", col("harga").cast(IntegerType())) \
         .select("date", "komoditas", "harga")
 
-    eia_silver = eia_df \
-        .withColumn("date", to_date(col("date"))) \
-        .withColumn("oil_price_usd", col("price_usd").cast(DoubleType())) \
-        .select("date", "oil_price_usd")
-
     # JOIN kurs + pangan (harian, inner - keduanya wajib ada di hari yang sama)
     joined_df = kurs_silver.join(pangan_silver, on="date", how="inner")
 
-    # LEFT JOIN harga minyak Brent (EIA hanya tersedia di hari bursa,
-    # sehingga beberapa baris akan punya oil_price_usd = null)
-    joined_df = joined_df.join(eia_silver, on="date", how="left")
+    try:
+        eia_df = spark.read.parquet(HDFS_BRONZE_EIA)
+        eia_silver = eia_df \
+            .withColumn("date", to_date(col("date"))) \
+            .withColumn("oil_price_usd", col("price_usd").cast(DoubleType())) \
+            .select("date", "oil_price_usd")
+        
+        # LEFT JOIN harga minyak Brent (EIA hanya tersedia di hari bursa,
+        # sehingga beberapa baris akan punya oil_price_usd = null)
+        joined_df = joined_df.join(eia_silver, on="date", how="left")
+    except Exception as e:
+        print(f"Skipping EIA in Silver: {e}")
+        from pyspark.sql.functions import lit
+        joined_df = joined_df.withColumn("oil_price_usd", lit(None).cast(DoubleType()))
 
     joined_df.write.mode("overwrite").parquet(f"{HDFS_SILVER_PATH}/kurs_pangan")
 
