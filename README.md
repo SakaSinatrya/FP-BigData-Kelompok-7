@@ -262,7 +262,7 @@ Buka browser ke `http://localhost:5000` untuk visualisasi real-time data kurs da
 
 Berikut adalah alur data (*pipeline*) dari hulu ke hilir yang diterapkan dalam proyek Big Data ini. Kami mengimplementasikan **Medallion Data Lakehouse Architecture** untuk memastikan skalabilitas penyimpanan dan kualitas data analitik.
 
-![Diagram Arsitektur Big Data] <img width="1996" height="5523" alt="Siskaperbapo Data Ingestion-2026-06-20-081107" src="https://github.com/user-attachments/assets/bed6ca3f-9a8b-4eb4-b327-b4420863b2d5" />
+<img width="1996" height="5523" alt="Siskaperbapo Data Ingestion-2026-06-20-081107" src="https://github.com/user-attachments/assets/bed6ca3f-9a8b-4eb4-b327-b4420863b2d5" />
 
 
 ### Penjelasan Layer Arsitektur:
