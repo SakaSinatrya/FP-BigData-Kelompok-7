@@ -258,6 +258,24 @@ Buka browser ke `http://localhost:5000` untuk visualisasi real-time data kurs da
 
 ---
 
+## 🏗️ Arsitektur Sistem (Data Pipeline)
+
+Berikut adalah alur data (*pipeline*) dari hulu ke hilir yang diterapkan dalam proyek Big Data ini. Kami mengimplementasikan **Medallion Data Lakehouse Architecture** untuk memastikan skalabilitas penyimpanan dan kualitas data analitik.
+
+![Diagram Arsitektur Big Data](<img width="1996" height="5523" alt="Siskaperbapo Data Ingestion-2026-06-20-081107" src="https://github.com/user-attachments/assets/678caf1e-1956-41ad-a2b0-63ac9018b9b1" />
+)
+
+### Penjelasan Layer Arsitektur:
+
+*   **1. Data Sources:** Data diambil secara berkelanjutan dari dua sumber eksternal, yaitu API BI Web Service (untuk data nilai tukar/kurs USD-IDR) dan Web Scraping Siskaperbapo (untuk data harga komoditas pangan).
+*   **2. Ingestion Layer:** Menggunakan **Apache Kafka** sebagai *message broker* untuk menangkap dan mengelola antrean data *streaming* secara *real-time* sebelum diteruskan ke penyimpanan.
+*   **3. Storage Layer:** Seluruh data yang ditangkap oleh Kafka disimpan ke dalam sistem penyimpanan terdistribusi **HDFS** (*Hadoop Distributed File System*) yang bertindak sebagai fondasi *Data Lake* kami.
+*   **4. Medallion Processing (Apache Spark):** Ini adalah inti pemrosesan dan transformasi data yang terbagi menjadi tiga zona progresif:
+    *   **Bronze Layer:** Mengekstrak data berformat JSON mentah dari HDFS dan mengonversinya menjadi format **Parquet** agar lebih terkompresi dan efisien.
+    *   **Silver Layer:** Melakukan *data cleaning*, penyesuaian tipe data (*casting*), dan operasi *join* untuk menggabungkan dataset Kurs dengan dataset Harga Pangan berdasarkan tanggal.
+    *   **Gold Layer:** Menjalankan proses analitik tingkat lanjut, termasuk agregasi data bulanan, perhitungan **Korelasi Pearson**, dan pembentukan **Food Price Vulnerability Index (FPVI)**.
+*   **5. Serving Layer:** Hasil analitik matang dari Gold Layer divisualisasikan menggunakan aplikasi web **Flask Dashboard** sehingga *insight* dan indeks kerawanan dapat dipantau langsung oleh *end-user* melalui *browser*.
+
 ## 📊 Data Flow
 
 ```
