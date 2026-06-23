@@ -2,7 +2,7 @@
 
 Project ini menganalisis korelasi antara kurs USD-IDR dan harga pangan menggunakan arsitektur Big Data modern.
 
-## 📋 Arsitektur
+## Arsitektur
 
 ```
 Producers → Kafka → Consumer → HDFS → Spark (Bronze/Silver/Gold) → Dashboard
@@ -51,7 +51,7 @@ Producers → Kafka → Consumer → HDFS → Spark (Bronze/Silver/Gold) → Das
 #### 7. **Config** (`config/`)
 - `kafka_config.py`: Konfigurasi terpusat (Kafka, HDFS, paths)
 
-### 🌟 Fitur Analitik & AI (Baru)
+### Fitur Analitik & AI (Baru)
 Proyek ini mengintegrasikan pemrosesan Big Data dengan teknik analisis tingkat lanjut untuk menghasilkan *actionable insights*:
 1. **Machine Learning Forecasting:** Menggunakan PySpark `LinearRegression` untuk memprediksi harga pangan hingga 4 minggu ke depan. Disertai metrik validasi (RMSE dan R²) secara transparan.
 2. **Anomaly Detection (Z-Score):** Mendeteksi lonjakan harga yang tidak wajar di luar tren historis menggunakan analisis residual Z-Score, lengkap dengan estimasi potensi penyebab anomali.
@@ -59,7 +59,7 @@ Proyek ini mengintegrasikan pemrosesan Big Data dengan teknik analisis tingkat l
 4. **Food Price Vulnerability Index (FPVI):** Indeks kerentanan harga pangan (skala 0-100) yang diciptakan khusus untuk proyek ini. Menilai seberapa rentan suatu komoditas terhadap guncangan kurs USD dan fluktuasi harga minyak global.
 5. **Pearson Correlation Analysis:** Analisis korelasi *real-time* yang mengungkap kekuatan hubungan linear antara Kurs USD/Minyak Global dengan pergerakan harga pangan domestik.
 
-## 🚀 Cara Menjalankan
+## Cara Menjalankan
 
 ### Prerequisites
 - **Python 3.11+** (tested dengan Python 3.13)
@@ -69,7 +69,7 @@ Proyek ini mengintegrasikan pemrosesan Big Data dengan teknik analisis tingkat l
 
 ---
 
-### 📍 Langkah 1: Aktifkan Virtual Environment
+### Langkah 1: Aktifkan Virtual Environment
 
 #### Windows (PowerShell):
 ```powershell
@@ -86,11 +86,11 @@ Proyek ini mengintegrasikan pemrosesan Big Data dengan teknik analisis tingkat l
 source venv/bin/activate
 ```
 
-✅ **Indikator sukses:** Muncul tanda `(venv)` di sebelah kiri prompt terminal Anda
+**Indikator sukses:** Muncul tanda `(venv)` di sebelah kiri prompt terminal Anda
 
 ---
 
-### 📍 Langkah 2: Instalasi Dependensi Proyek
+### Langkah 2: Instalasi Dependensi Proyek
 
 Setelah virtual environment aktif, pasang semua library Python dari `requirements.txt`:
 
@@ -107,7 +107,7 @@ pip install -r requirements.txt
 
 ---
 
-### 📍 Langkah 3: Membersihkan Container Lama (Jika Ada)
+### Langkah 3: Membersihkan Container Lama (Jika Ada)
 
 Jika ada container dari proyek sebelumnya, bersihkan terlebih dahulu:
 
@@ -117,7 +117,7 @@ docker rm -f kafka-broker hadoop-namenode hadoop-datanode hadoop-resourcemanager
 
 ---
 
-### 📍 Langkah 4: Jalankan Infrastruktur Big Data (Docker)
+### Langkah 4: Jalankan Infrastruktur Big Data (Docker)
 
 Pastikan file `docker-compose.yml` dan `hadoop.env` berada di direktori root proyek.
 
@@ -127,14 +127,14 @@ Jalankan semua container dalam mode background (*detached*):
 docker-compose up -d
 ```
 
-**⚠️ PENTING:** Tunggu **20-30 detik** sebelum melanjutkan ke langkah berikutnya agar:
+**PENTING:** Tunggu **20-30 detik** sebelum melanjutkan ke langkah berikutnya agar:
 - Kafka KRaft controller dan broker selesai booting
 - Hadoop NameNode selesai formatting
 - HDFS fully operational
 
 ---
 
-### 📍 Langkah 5: Konfigurasi Izin Akses HDFS
+### Langkah 5: Konfigurasi Izin Akses HDFS
 
 Atur permission root HDFS agar script Consumer Python dapat menulis data secara dinamis:
 
@@ -151,7 +151,7 @@ docker exec -it hadoop-namenode hdfs dfs -ls -d /
 
 ---
 
-### 📍 Langkah 6: Verifikasi Infrastruktur
+### Langkah 6: Verifikasi Infrastruktur
 
 Pastikan semua service sudah berjalan:
 
@@ -175,7 +175,7 @@ Akses Web UI untuk verifikasi:
 
 ---
 
-### 📍 Langkah 7: Run Producers
+### Langkah 7: Run Producers
 
 Buka terminal baru (tetap aktifkan venv), jalankan producer:
 
@@ -196,7 +196,7 @@ docker exec -it kafka-broker kafka-console-consumer --bootstrap-server localhost
 
 ---
 
-### 📍 Langkah 8: Run Consumer to HDFS
+### Langkah 8: Run Consumer to HDFS
 
 Terminal baru, jalankan consumer:
 
@@ -216,7 +216,7 @@ docker exec -it hadoop-namenode hdfs dfs -ls -R /data/lakehouse/bronze/
 
 ---
 
-### 📍 Langkah 9: Run Spark Processing Layers
+### Langkah 9: Run Spark Processing Layers
 
 Jalankan Spark jobs untuk transformasi data. Pastikan Consumer sudah berjalan dan data tersimpan di HDFS.
 
@@ -239,7 +239,7 @@ Monitor progress di Spark Web UI: `http://localhost:4040`
 
 ---
 
-### 📍 Langkah 10: Start Dashboard
+### Langkah 10: Start Dashboard
 
 Terminal baru, jalankan Flask dashboard:
 
@@ -258,7 +258,7 @@ Buka browser ke `http://localhost:5000` untuk visualisasi real-time data kurs da
 
 ---
 
-## 🏗️ Arsitektur Sistem (Data Pipeline)
+## Arsitektur Sistem (Data Pipeline)
 
 Berikut adalah alur data (*pipeline*) dari hulu ke hilir yang diterapkan dalam proyek Big Data ini. Kami mengimplementasikan **Medallion Data Lakehouse Architecture** untuk memastikan skalabilitas penyimpanan dan kualitas data analitik.
 
@@ -276,7 +276,7 @@ Berikut adalah alur data (*pipeline*) dari hulu ke hilir yang diterapkan dalam p
     *   **Gold Layer:** Menjalankan proses analitik tingkat lanjut, termasuk agregasi data bulanan, perhitungan **Korelasi Pearson**, dan pembentukan **Food Price Vulnerability Index (FPVI)**.
 *   **5. Serving Layer:** Hasil analitik matang dari Gold Layer divisualisasikan menggunakan aplikasi web **Flask Dashboard** sehingga *insight* dan indeks kerawanan dapat dipantau langsung oleh *end-user* melalui *browser*.
 
-## 📊 Data Flow
+## Data Flow
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -327,7 +327,7 @@ Berikut adalah alur data (*pipeline*) dari hulu ke hilir yang diterapkan dalam p
 - **On-demand:** Dashboard queries Gold layer
 
 
-## 🔧 Konfigurasi
+## Konfigurasi
 
 Konfigurasi terpusat disimpan di `config/kafka_config.py`:
 
