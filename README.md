@@ -2,7 +2,7 @@
 
 Project ini menganalisis korelasi antara kurs USD-IDR dan harga pangan menggunakan arsitektur Big Data modern.
 
-## (Kelompok 7)
+## Anggota Kelompok 7
 
 | NRP | Nama Lengkap |
 | :--- | :--- |
