@@ -2,6 +2,16 @@
 
 Project ini menganalisis korelasi antara kurs USD-IDR dan harga pangan menggunakan arsitektur Big Data modern.
 
+## (Kelompok 7)
+
+| NRP | Nama Lengkap |
+| :--- | :--- |
+| 5027241049 | Khumaidi Kharis Az-zacky |
+| 5027241069 | Prabaswara Febrian Winandika |
+| 5027241070 | Zahra Khaalishah |
+| 5027241088 | I Gede Bagus Saka Sinatrya |
+| 5027241107 | Jofanka Al-Kautsar Pangestu Abady |
+
 ## Arsitektur
 
 ```
